@@ -10,6 +10,8 @@ import {
 import { CreateTaskDto } from './dto/create-task-dto';
 import { UpdateTaskDto } from './dto/update-task-dto';
 import { TasksService } from './tasks.service';
+import { ValidationPipe } from '@nestjs/common';
+import { getResponseData } from 'src/helpers/data';
 
 @Controller('tasks')
 export class TasksController {
@@ -19,7 +21,11 @@ export class TasksController {
   // Route to get all tasks
   @Get()
   getTasks() {
-    return this.tasksService.getTasks();
+    try {
+      return getResponseData(false, this.tasksService.getTasks(), 'Success');
+    } catch (err) {
+      return getResponseData(true, null, 'Error');
+    }
   }
 
   // Route to get a single task by id
@@ -30,7 +36,7 @@ export class TasksController {
 
   //   Route to create a new task
   @Post()
-  createTask(@Body() createTaskDto: CreateTaskDto) {
+  createTask(@Body(new ValidationPipe()) createTaskDto: CreateTaskDto) {
     return this.tasksService.createTask(createTaskDto);
   }
 
