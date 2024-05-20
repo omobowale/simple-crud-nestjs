@@ -55,4 +55,4 @@ Task
 
 ## API Docs
 - The APIs have been documented using Swagger. 
-- The link is at: [api_docs](http://localhost:4000/docs)
+- The link is at: [http://localhost:4000/docs](http://localhost:4000/docs)
