@@ -1,50 +1,43 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { CreateTaskDto } from './dto/create-task-dto';
 import { UpdateTaskDto } from './dto/update-task-dto';
 import { Task } from './entities/task.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class TasksService {
   constructor(
-    @InjectModel(Task)
-    private taskRepository: typeof Task,
+    @InjectRepository(Task) private taskRepository: Repository<Task>,
   ) {}
-  private tasks = [
-    { id: 1, title: 'Title 1', description: 'Description 1' },
-    { id: 2, title: 'Title 2', description: 'Description 2' },
-    { id: 3, title: 'Title 3', description: 'Description 3' },
-  ];
 
-  getTasks() {
-    return this.taskRepository.findAll();
+  async getTasks() {
+    const tasks = await this.taskRepository.find();
+    return tasks;
   }
 
-  getSingleTask(id: number) {
-    return this.tasks.find((task) => task.id == id);
-  }
-
-  createTask(task: CreateTaskDto) {
-    return this.taskRepository.create(task as any);
-  }
-
-  updateTask(id: number, task: UpdateTaskDto) {
-    this.tasks = this.tasks.map((t) => {
-      if (t.id == id) {
-        return { ...t, ...task };
-      } else {
-        return t;
-      }
-    });
-
-    return this.getSingleTask(id);
-  }
-
-  deleteTask(id: number) {
-    const task = this.getSingleTask(id);
-
-    this.tasks = this.tasks.filter((task) => task.id == id);
-
+  async getSingleTask(id: string) {
+    const task = await this.taskRepository.findOne({ where: { id } });
+    if (!task) {
+      throw new NotFoundException(
+        `Could not find specified task with id: ${id}`,
+      );
+    }
     return task;
+  }
+
+  async createTask(task: CreateTaskDto) {
+    return await this.taskRepository.save(task);
+  }
+
+  async updateTask(id: string, task: UpdateTaskDto) {
+    const result = await this.taskRepository.update(id, task);
+    return task;
+  }
+
+  async deleteTask(id: string) {
+    const result = await this.taskRepository.delete(id);
+    return result;
   }
 }

@@ -1,8 +1,8 @@
-import { SequelizeModuleOptions } from '@nestjs/sequelize';
+import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 
-export const dataBaseConfig: SequelizeModuleOptions = {
-  dialect: 'sqlite',
-  storage: '.db/data.sqlite3',
-  autoLoadModels: true,
-  synchronize: false,
+export const dataBaseConfig: TypeOrmModuleOptions = {
+  type: 'sqlite',
+  database: 'taskMgt',
+  entities: ['dist/**/**/*.entity{.ts,.js}'],
+  synchronize: true,
 };
