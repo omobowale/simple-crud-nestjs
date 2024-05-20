@@ -32,10 +32,10 @@ Use Postman or any other API request apps via http://localhost:4000
 
 ## Models
 
-``` User
-
--- email
--- password
+``` 
+User
+-- email - email of user
+-- password - password of user
 -- createdAt - date created
 -- updatedAt - date updated
 
@@ -43,7 +43,8 @@ Use Postman or any other API request apps via http://localhost:4000
 
 
 
-```Task
+```
+Task
 -- title - title of the task
 -- description - description of the task
 -- status - status of the task whether pending or completed
